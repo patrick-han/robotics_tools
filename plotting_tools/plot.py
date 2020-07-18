@@ -5,7 +5,7 @@ import argparse, sys
 
 # Inputs: Take in a list of 2D coordinate sets, each represented by an Nx2 numpy array
 # Effects: Plot polygons on a 2D plane
-def plotR2(coords):
+def plotR2(coords, outputFilename):
     
     fig = plt.figure()
     ax = fig.gca()
@@ -20,16 +20,23 @@ def plotR2(coords):
     ax.set_xlim([-20, 20])
     plt.gca().set_aspect('equal', adjustable='box')
     plt.show()
-    plt.savefig("test.png")
+    plt.savefig(outputFilename)
 
 # Inputs: Properly formatted text file containing the coordinates of polygon objects
 # Effects: Send extracted coordinates to the plotter function plotR2()
 def main():
     # Parse input file argument
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input')
-    args = parser.parse_args()
+    parser.add_argument('-i', '--input', required = True)
+    parser.add_argument('-o', '--output', required = True)
+    # args = parser.parse_args()
+    try:
+        args = parser.parse_args()
+    except argparse.ArgumentError:
+        print("error")
+        sys.exit()
     file = args.input
+    output_filename = args.output
 
 
     # Read in lines and do a bit of clean up. But user should follow the relatively easy format specified.
@@ -53,7 +60,7 @@ def main():
     coordinateSets.append(np.array(raw_coordinates[first_idx:]).astype(np.float)) # Slice out the last set
 
     # Plot polygons
-    plotR2(coordinateSets)
+    plotR2(coordinateSets, output_filename)
     
     
 
